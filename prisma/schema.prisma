@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model patient {
+  patient_id      Int      @id @default(autoincrement())
+  name            String   @db.VarChar(50)
+  phone_number    String   @db.VarChar(20)
+  birthday        DateTime @db.Date
+  gender          String   @db.VarChar(10)
+  appoinment_date DateTime @db.Timestamp(0)
+  course_count    Int
+  medicalrecords  medicalrecords[]
+}
+
+model staff {
+  username           String             @unique @db.VarChar(50)
+  staff_name         String             @db.VarChar(50)
+  birthday           DateTime           @db.Date
+  gender             String             @db.VarChar(10)
+  staff_phone_number String             @db.VarChar(20)
+  role               String             @db.VarChar(10)
+  password           String             @db.VarChar(255)
+  email              String             @db.VarChar(50)
+  staff_id           Int                @id @default(autoincrement())
+  financialrecords   financialrecords[]
+}
+
+model medicalrecords {
+  record_id        Int      @id @default(autoincrement())
+  doctor_id        Int
+  staff_id         Int
+  patient_id       Int
+  symptoms         String   @db.VarChar(50)
+  appointment_date DateTime @db.Timestamp(6)
+  cost             Int      @default(0)
+  patient          patient  @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model equipment {
+  equipment_id   Int             @id @default(autoincrement())
+  equipment_name String          @db.VarChar(20)
+  price          Int
+  amount         Int
+  requisition    requisition[]
+  stockinrecord  stockinrecord[]
+}
+
+model financialrecords {
+  record_date         DateTime @id @db.Timestamp(6)
+  income_and_expenses String   @db.VarChar(10)
+  cost                Int
+  staff_id            Int
+  staff               staff    @relation(fields: [staff_id], references: [staff_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model requisition {
+  requisition_id   Int       @id @default(autoincrement())
+  use_amount       Int
+  requisition_date DateTime  @db.Timestamp(6)
+  equipment_id     Int
+  equipment        equipment @relation(fields: [equipment_id], references: [equipment_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model stockinrecord {
+  stock_in_id   Int       @id @default(autoincrement())
+  amount    Int
+  stock_in_date DateTime  @db.Timestamp(6)
+  equipment_id  Int
+  equipment     equipment @relation(fields: [equipment_id], references: [equipment_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model treatmenttype {
+  treatment_id   Int    @id @default(autoincrement())
+  cost           Int
+  treatment_name String @db.VarChar(20)
+}
