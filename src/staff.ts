@@ -28,7 +28,7 @@ app.post("/addStaff", async ({body}) => {
   const { username, staff_name, birthday, gender, staff_phone_number, role, password, email } = body;
 
   const result = await db.$queryRaw`
-    INSERT INTO "Staff" 
+    INSERT INTO "staff" 
     ("username", staff_name, birthday, gender, staff_phone_number, role, password, email) 
     VALUES (${username}, ${staff_name}, ${birthday}, ${gender}, ${staff_phone_number}, ${role}, ${password}, ${email});
   `;
@@ -40,7 +40,7 @@ app.post("/addStaff", async ({body}) => {
 
 
 app.get("/login/:username/:password", async ({ params }) => {
-  return await db.$queryRaw`SELECT "id" FROM "Staff" WHERE "username" like ${params.username} AND "password" like ${params.password};`;
+  return await db.$queryRaw`SELECT "id" FROM "staff" WHERE "username" like ${params.username} AND "password" like ${params.password};`;
 });
 
 
