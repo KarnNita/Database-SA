@@ -8,14 +8,14 @@ datasource db {
 }
 
 model patient {
-  patient_id      Int      @id @default(autoincrement())
-  name            String   @db.VarChar(50)
-  phone_number    String   @db.VarChar(20)
-  birthday        DateTime @db.Date
-  gender          String   @db.VarChar(10)
-  appoinment_date DateTime @db.Timestamp(0)
+  name            String          @db.VarChar(50)
+  phone_number    String          @db.VarChar(20)
+  birthday        DateTime        @db.Date
+  gender          String          @db.VarChar(10)
+  appoinment_date DateTime        @db.Timestamp(0)
   course_count    Int
-  medicalrecords  medicalrecords[]
+  patient_id      Int             @id @default(autoincrement())
+  medicalrecords  medicalrecords?
 }
 
 model staff {
@@ -29,17 +29,24 @@ model staff {
   email              String             @db.VarChar(50)
   staff_id           Int                @id @default(autoincrement())
   financialrecords   financialrecords[]
+  doctorID           medicalrecords[]   @relation("doctor_id")
+  staffID            medicalrecords[]   @relation("staff_id")
 }
 
 model medicalrecords {
   record_id        Int      @id @default(autoincrement())
-  doctor_id        Int
-  staff_id         Int
-  patient_id       Int
   symptoms         String   @db.VarChar(50)
-  appointment_date DateTime @db.Timestamp(6)
   cost             Int      @default(0)
-  patient          patient  @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction)
+  appointment_date DateTime @db.Timestamp(6)
+  doctorid         Int
+  patientid        Int      @unique
+  staffid          Int
+  doctor_id        staff    @relation("doctor_id", fields: [doctorid], references: [staff_id])
+  patient_id       patient  @relation(fields: [patientid], references: [patient_id], onDelete: NoAction, onUpdate: NoAction)
+  staff_id         staff    @relation("staff_id", fields: [staffid], references: [staff_id])
+
+  @@index([doctorid])
+  @@index([staffid])
 }
 
 model equipment {
@@ -69,9 +76,9 @@ model requisition {
 
 model stockinrecord {
   stock_in_id   Int       @id @default(autoincrement())
-  amount    Int
   stock_in_date DateTime  @db.Timestamp(6)
   equipment_id  Int
+  amount        Int
   equipment     equipment @relation(fields: [equipment_id], references: [equipment_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
