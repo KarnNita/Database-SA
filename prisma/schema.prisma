@@ -57,7 +57,7 @@ model medicalrecords {
 model equipment {
   equipment_id   Int             @id @default(autoincrement())
   equipment_name String          @db.VarChar(20)
-  price          Int
+  price          Float
   amount         Int
   requisition    requisition[]
   stockinrecord  stockinrecord[]
@@ -88,7 +88,7 @@ model stockinrecord {
   stock_in_date DateTime  @db.Timestamp(6)
   equipment_id  Int
   amount        Int
-  staff_id         Int
+  staff_id      Int
   equipment     equipment @relation(fields: [equipment_id], references: [equipment_id], onDelete: NoAction, onUpdate: NoAction)
   staff         staff    @relation(fields: [staff_id], references: [staff_id], onDelete: NoAction, onUpdate: NoAction)
 

@@ -21,7 +21,7 @@ app.get("/getNamebyID/:staff_id", async ({ params }) => {
 });
 
 app.get("/getStaffList", async () => {
-  return await db.$queryRaw`SELECT staff_id, "username", staff_name, birthday, gender, staff_phone_number, role, password, email FROM "staff";`;
+  return await db.$queryRaw`SELECT staff_id, "username", staff_name, birthday, gender, staff_phone_number, role, email FROM "staff";`;
 });
 
 app.get("/getStaffName/:staff_id", async ({params}) => {
