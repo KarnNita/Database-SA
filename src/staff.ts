@@ -16,6 +16,10 @@ app.get("/searchbyUsername/:username", async ({params}) => {
     return await db.$queryRaw`SELECT staff_id, "username", staff_name, birthday, gender, staff_phone_number, role, password, email FROM "staff" WHERE LOWER(replace("username",' ','')) like '%' || ${params.username} || '%';;`;
 });
 
+app.get("/getNamebyID/:staff_id", async ({ params }) => {
+  return await db.$queryRaw`SELECT staff_name FROM "staff" WHERE "staff_id" = ${Number(params.staff_id)} LIMIT 1;`;
+});
+
 app.get("/getStaffList", async () => {
   return await db.$queryRaw`SELECT staff_id, "username", staff_name, birthday, gender, staff_phone_number, role, password, email FROM "staff";`;
 });

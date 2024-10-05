@@ -30,7 +30,7 @@ model staff {
   staff_id           Int                @id @default(autoincrement())
   financialrecords   financialrecords[]
   requisition        requisition[]
-  stockinrecord  stockinrecord[]
+  stockinrecord      stockinrecord[]
   doctorID           medicalrecords[]   @relation("doctor_id")
   staffID            medicalrecords[]   @relation("staff_id")
 }
@@ -45,13 +45,12 @@ model medicalrecords {
   staffid          Int
   treatment_id     Int
   doctor_id        staff    @relation("doctor_id", fields: [doctorid], references: [staff_id])
-  patient_id       patient  @relation(fields: [patientid], references: [patient_id]) 
+  patient_id       patient  @relation(fields: [patientid], references: [patient_id], onDelete: NoAction, onUpdate: NoAction) 
   staff_id         staff    @relation("staff_id", fields: [staffid], references: [staff_id])
   treatmenttype    treatmenttype  @relation(fields: [treatment_id], references: [treatment_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([doctorid])
   @@index([staffid])
-  // @@index([patientid])
 }
 
 
@@ -99,5 +98,5 @@ model treatmenttype {
   treatment_id   Int    @id @default(autoincrement())
   cost           Int
   treatment_name String @db.VarChar(20)
-  medicalrecords  medicalrecords[]
+  medicalrecords medicalrecords[]
 }

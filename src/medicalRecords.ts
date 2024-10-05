@@ -36,6 +36,6 @@ app.post("/addRecord", async ({body}) => {
   return { success: true, message: "Patient added successfully", result };
 },{body:t.Object({
   symptoms:t.String({minLength:1, maxLength:100}), cost:t.Integer({minimum: 0}), appointment_date:t.Date(), doctorid:t.Integer(),  patientid:t.Integer(), staffid:t.Integer(), treatment_id:t.Integer()}) 
-});// not work
+});
 
 export default app;

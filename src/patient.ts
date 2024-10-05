@@ -13,9 +13,12 @@ app.get("/searchbyName/:name", async ({params}) => {
 });
 
 
-
 app.get("/getPatientList", async () => {
   return await db.$queryRaw`SELECT patient_id, name, phone_number, birthday, gender, appoinment_date, course_count FROM "patient";`;
+});
+
+app.get("/getNamebyID/:patient_id", async ({ params }) => {
+  return await db.$queryRaw`SELECT name FROM "patient" WHERE "patient_id" = ${Number(params.patient_id)} LIMIT 1;`;
 });
 
 app.post("/addPatient", async ({body}) => {
