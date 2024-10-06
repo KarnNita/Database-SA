@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
-import patient from "./patient";
 import auth from "./auth";
+import patient from "./patient";
 import staff from "./staff";
 import equipment from "./equipment";
 import treatmenttype  from "./treatmentType";
