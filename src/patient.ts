@@ -14,6 +14,16 @@ app.get("/searchbyName/:name_surname", async ({ params }) => {
   return await db.$queryRaw`SELECT patient_id, name_surname, phone_number, birthday, gender, appointment_date, course_count, first_visit_date FROM "patient" WHERE LOWER(replace("name_surname", ' ', '')) LIKE '%' || LOWER(${params.name_surname}) || '%'; `;
 });
 
+app.get("/searchbyAppointmentDate/:appointment_date", async ({ params }) => {
+  const { appointment_date } = params;
+
+  return await db.$queryRaw`
+    SELECT patient_id, name_surname, phone_number, birthday, gender, appointment_date, course_count, first_visit_date 
+    FROM "patient" 
+    WHERE "appointment_date" = ${appointment_date}::timestamp;`;
+});
+
+
 app.get("/getPatientList", async () => {
   return await db.$queryRaw`SELECT patient_id, name_surname, phone_number, birthday, gender, appointment_date, course_count, first_visit_date FROM "patient";`;
 });
