@@ -16,6 +16,9 @@ app.get("/getNamebyID/:equipment_id", async ({ params }) => {
   return await db.$queryRaw`SELECT equipment_name FROM "equipment" WHERE "equipment_id" = ${Number(params.equipment_id)} LIMIT 1;`;
 });
 
+app.get("/getPricebyID/:equipment_id", async ({ params }) => {
+  return await db.$queryRaw`SELECT price FROM "equipment" WHERE "equipment_id" = ${Number(params.equipment_id)} LIMIT 1;`;
+});
 
 app.get("/searchbyName/:equipment_name", async ({params}) => {
   return await db.$queryRaw`SELECT staff_id, "username", staff_name, birthday, gender, staff_phone_number, role, password, email FROM "staff" WHERE LOWER(replace("equipment_name",' ','')) like '%' || ${params.equipment_name} || '%';;`;
