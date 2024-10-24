@@ -20,4 +20,8 @@ app.get("/getNamebyID/:treatment_id", async ({ params }) => {
   return await db.$queryRaw`SELECT treatment_name FROM "treatmenttype" WHERE "treatment_id" = ${Number(params.treatment_id)} LIMIT 1;`;
 });
 
+app.get("/getTreatmentNameList", async () => {
+  return await db.$queryRaw`SELECT treatment_name FROM "treatmenttype";`;
+});
+
 export default app;
