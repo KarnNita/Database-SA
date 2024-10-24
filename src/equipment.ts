@@ -8,8 +8,8 @@ app.get("/getEquipment", async () => {
     return await db.$queryRaw`SELECT equipment_id, equipment_name, price, amount FROM "equipment";`;
 });
 
-app.get("/getEquipmentName", async () => {
-  return await db.$queryRaw`SELECT equipment_id, equipment_name, price, amount FROM "equipment";`;
+app.get("/getEquipmentNameAmount", async () => {
+  return await db.$queryRaw`SELECT equipment_name, amount FROM "equipment";`;
 });
 
 app.get("/searchbyID/:equipment_id", async ({ params }) => {
