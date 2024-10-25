@@ -8,14 +8,15 @@ datasource db {
 }
 
 model patient {
-  patient_id      Int      @id @default(autoincrement())
-  name            String   @db.VarChar(50)
-  phone_number    String   @db.VarChar(20)
-  birthday        DateTime @db.Date
-  gender          String   @db.VarChar(10)
-  appoinment_date DateTime @db.Timestamp(0)
-  course_count    Int
-  medicalrecords  medicalrecords[]
+  name_surname     String           @db.VarChar(50)
+  phone_number     String           @db.VarChar(10)
+  birthday         DateTime         @db.Date
+  gender           String           @db.VarChar(10)
+  appointment_date DateTime         @db.Timestamp(0)
+  course_count     Int
+  patient_id       Int              @id @default(autoincrement())
+  first_visit_date DateTime?        @db.Timestamp(6)
+  medicalrecords   medicalrecords[]
 }
 
 model staff {
@@ -23,36 +24,47 @@ model staff {
   staff_name         String             @db.VarChar(50)
   birthday           DateTime           @db.Date
   gender             String             @db.VarChar(10)
-  staff_phone_number String             @db.VarChar(20)
+  staff_phone_number String             @db.VarChar(10)
   role               String             @db.VarChar(10)
   password           String             @db.VarChar(255)
   email              String             @db.VarChar(50)
   staff_id           Int                @id @default(autoincrement())
   financialrecords   financialrecords[]
+  doctorID           medicalrecords[]   @relation("doctor_id")
+  staffID            medicalrecords[]   @relation("staff_id")
+  requisition        requisition[]
+  stockinrecord      stockinrecord[]
 }
 
 model medicalrecords {
-  record_id        Int      @id @default(autoincrement())
-  doctor_id        Int
-  staff_id         Int
-  patient_id       Int
-  symptoms         String   @db.VarChar(50)
-  appointment_date DateTime @db.Timestamp(6)
-  cost             Int      @default(0)
-  patient          patient  @relation(fields: [patient_id], references: [patient_id], onDelete: NoAction, onUpdate: NoAction)
+  record_id        Int           @id @default(autoincrement())
+  cost             Int           @default(0)
+  appointment_date DateTime      @db.Timestamp(6)
+  doctorid         Int
+  patientid        Int
+  staffid          Int
+  treatment_id     Int
+  doctor_id        staff         @relation("doctor_id", fields: [doctorid], references: [staff_id])
+  patient_id       patient       @relation(fields: [patientid], references: [patient_id], onDelete: NoAction, onUpdate: NoAction)
+  staff_id         staff         @relation("staff_id", fields: [staffid], references: [staff_id])
+  treatmenttype    treatmenttype @relation(fields: [treatment_id], references: [treatment_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([doctorid])
+  @@index([staffid])
 }
 
 model equipment {
   equipment_id   Int             @id @default(autoincrement())
   equipment_name String          @db.VarChar(20)
-  price          Int
+  price          Float
   amount         Int
   requisition    requisition[]
   stockinrecord  stockinrecord[]
 }
 
 model financialrecords {
-  record_date         DateTime @id @db.Timestamp(6)
+  financial_record_id Int      @id @default(autoincrement())
+  record_date         DateTime @db.Timestamp(6)
   income_and_expenses String   @db.VarChar(10)
   cost                Int
   staff_id            Int
@@ -64,19 +76,24 @@ model requisition {
   use_amount       Int
   requisition_date DateTime  @db.Timestamp(6)
   equipment_id     Int
+  staff_id         Int
   equipment        equipment @relation(fields: [equipment_id], references: [equipment_id], onDelete: NoAction, onUpdate: NoAction)
+  staff            staff     @relation(fields: [staff_id], references: [staff_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model stockinrecord {
   stock_in_id   Int       @id @default(autoincrement())
-  amount    Int
   stock_in_date DateTime  @db.Timestamp(6)
   equipment_id  Int
+  amount        Int
+  staff_id      Int
   equipment     equipment @relation(fields: [equipment_id], references: [equipment_id], onDelete: NoAction, onUpdate: NoAction)
+  staff         staff     @relation(fields: [staff_id], references: [staff_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model treatmenttype {
-  treatment_id   Int    @id @default(autoincrement())
+  treatment_id   Int              @id @default(autoincrement())
   cost           Int
-  treatment_name String @db.VarChar(20)
+  treatment_name String           @db.VarChar(20)
+  medicalrecords medicalrecords[]
 }
