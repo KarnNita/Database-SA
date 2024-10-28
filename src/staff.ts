@@ -113,7 +113,7 @@ app.post(
 );
 
 app.get("/login/:username/:password", async ({ params }) => {
-  return await db.$queryRaw`SELECT "id" FROM "staff" WHERE "username" like ${params.username} AND "password" like ${params.password};`;
+  return await db.$queryRaw`SELECT "staff_id" FROM "staff" WHERE "username" like ${params.username} AND "password" like ${params.password};`;
 });
 
 // INSERT INTO Staff ("username", staff_name, birthday, gender, staff_phone_number, role, password, email)
