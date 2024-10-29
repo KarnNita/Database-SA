@@ -13,9 +13,9 @@ model patient {
   birthday         DateTime         @db.Date
   gender           String           @db.VarChar(10)
   appointment_date DateTime         @db.Timestamp(0)
-  course_count     Int
+  course_count     Int              @default(0)
   patient_id       Int              @id @default(autoincrement())
-  first_visit_date DateTime?        @db.Timestamp(6)
+  first_visit_date DateTime         @db.Timestamp(6)
   medicalrecords   medicalrecords[]
 }
 
