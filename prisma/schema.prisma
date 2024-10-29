@@ -38,7 +38,7 @@ model staff {
 
 model medicalrecords {
   record_id        Int           @id @default(autoincrement())
-  cost             Int           @default(0)
+  cost             Float           @default(0)
   appointment_date DateTime      @db.Timestamp(6)
   doctorid         Int
   patientid        Int
@@ -66,7 +66,7 @@ model financialrecords {
   financial_record_id Int      @id @default(autoincrement())
   record_date         DateTime @db.Timestamp(6)
   income_and_expenses String   @db.VarChar(10)
-  cost                Int
+  cost                Float
   staff_id            Int
   staff               staff    @relation(fields: [staff_id], references: [staff_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -93,7 +93,7 @@ model stockinrecord {
 
 model treatmenttype {
   treatment_id   Int              @id @default(autoincrement())
-  cost           Int
+  cost           Float
   treatment_name String           @db.VarChar(20)
   medicalrecords medicalrecords[]
 }
