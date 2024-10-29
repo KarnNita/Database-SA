@@ -90,13 +90,28 @@ app.post(
       email,
     } = body;
 
-    const result = await db.$queryRaw`
-    UPDATE "staff"  SET
-    ("username" = ${username}, staff_name = ${staff_name}, birthday = ${birthday}, gender = ${gender}, staff_phone_number = ${staff_phone_number}, role = ${role}, email = ${email}) 
-    WHERE "staff_id"  = ${staff_id}
-  `;
+    try {
+      const result = await db.$queryRaw`
+        UPDATE "staff"
+        SET
+          "username" = ${username},
+          "staff_name" = ${staff_name},
+          "birthday" = ${birthday},
+          "gender" = ${gender},
+          "staff_phone_number" = ${staff_phone_number},
+          "role" = ${role},
+          "email" = ${email}
+        WHERE "staff_id" = ${staff_id};
+      `;
 
-    return { success: true, message: "Staff added successfully", result };
+      return { success: true, message: "Staff updated successfully", result };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: "Error while editing staff data",
+        details: error.message,
+      };
+    }
   },
   {
     body: t.Object({
@@ -111,6 +126,7 @@ app.post(
     }),
   }
 );
+
 
 app.get("/login/:username/:password", async ({ params }) => {
   return await db.$queryRaw`SELECT "staff_id" FROM "staff" WHERE "username" like ${params.username} AND "password" like ${params.password};`;
