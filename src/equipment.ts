@@ -4,8 +4,16 @@ import { password } from "bun";
 
 const app = new Elysia({ prefix: "/equipment", detail: { tags: ["Equipment"] } });
 
+interface Equipment {
+  equipment_id: number;
+  equipment_name: string;
+  price: number;
+  amount: number;
+}
+
 app.get("/getEquipment", async () => {
-    return await db.$queryRaw`SELECT equipment_id, equipment_name, price, amount FROM "equipment";`;
+  const equipments: Equipment[] = await db.$queryRaw`SELECT equipment_id, equipment_name, price, amount FROM "equipment";`;
+  return equipments;
 });
 
 app.get("/getEquipmentNameAmount", async () => {
@@ -37,12 +45,19 @@ app.post(
       UPDATE "equipment"
       SET amount = ${amount}
       WHERE "equipment_id" = ${equipment_id};
-    `;
+    ` as { affectedRows: number };
 
-    return {
-      success: true,
-      message: "Amount updated successfully",
-    };
+    if (result.affectedRows > 0) {
+      return {
+        success: true,
+        message: "Amount updated successfully",
+      };
+    } else {
+      return {
+        success: false,
+        message: "Update failed or no rows affected",
+      };
+    }
   },
   {
     body: t.Object({
@@ -51,8 +66,5 @@ app.post(
     }),
   }
 );
-
-
-
 
 export default app;
