@@ -91,10 +91,18 @@ app.post(
     } = body;
 
     const result = await db.$queryRaw`
-    UPDATE "staff"  SET
-    ("username" = ${username}, staff_name = ${staff_name}, birthday = ${birthday}, gender = ${gender}, staff_phone_number = ${staff_phone_number}, role = ${role}, email = ${email}) 
-    WHERE "staff_id"  = ${staff_id}
-  `;
+    UPDATE "staff"
+    SET
+      "username" = ${username}, 
+      staff_name = ${staff_name}, 
+      birthday = ${birthday}, 
+      gender = ${gender}, 
+      staff_phone_number = ${staff_phone_number}, 
+      role = ${role}, 
+      email = ${email} 
+      WHERE "staff_id" = ${staff_id}
+`;
+
 
     return { success: true, message: "Staff added successfully", result };
   },
