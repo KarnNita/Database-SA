@@ -37,34 +37,43 @@ app.get("/searchbyName/:equipment_name", async ({params}) => {
 });
 
 app.post(
-  "/editAmount/:equipment_id",
-  async ({ body }) => {
-    const { equipment_id, amount } = body;
+  "/editEquipment",
+  async ({ body }: { body: Equipment }) => {
+    try {
+      const {
+        equipment_id,
+        equipment_name,
+        price,
+        amount,
+      } = body;
 
-    const result = await db.$queryRaw`
-      UPDATE "equipment"
-      SET amount = ${amount}
-      WHERE "equipment_id" = ${equipment_id};
-    ` as { affectedRows: number };
+      await db.$queryRaw`
+        UPDATE "equipment"
+        SET
+          "equipment_name" = ${equipment_name},
+          "price" = ${price},
+          "amount" = ${amount}
+        WHERE "equipment_id" = ${equipment_id};
+      `;
 
-    if (result.affectedRows > 0) {
-      return {
-        success: true,
-        message: "Amount updated successfully",
-      };
-    } else {
+      return { success: true, message: "Equipment updated successfully" };
+    } catch (error: any) {
       return {
         success: false,
-        message: "Update failed or no rows affected",
+        error: "Error while updating equipment data",
+        details: error.message,
       };
     }
   },
   {
     body: t.Object({
-      equipment_id: t.Integer({ minimum: 0, maximum: 9999 }),
+      equipment_id: t.Integer({ minimum: 0 }),
+      equipment_name: t.String({ minLength: 1, maxLength: 100 }),
+      price: t.Number({ minimum: 0 }),
       amount: t.Integer({ minimum: 0 }),
     }),
   }
 );
+
 
 export default app;
