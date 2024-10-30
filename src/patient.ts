@@ -4,6 +4,17 @@ import { password } from "bun";
 
 const app = new Elysia({ prefix: "/patient", detail: { tags: ["Patient"] } });
 
+interface Patient {
+  patient_id: number;
+  name_surname: string;
+  phone_number: string;
+  birthday: Date;
+  gender: string;
+  appointment_date: Date;
+  course_count: number;
+  first_visit_date: Date;
+}
+
 app.get("/searchbyID/:patient_id", async ({ params }) => {
   return await db.$queryRaw`SELECT patient_id, name_surname, phone_number, birthday, gender, appointment_date, course_count, first_visit_date FROM "patient" WHERE "patient_id" = ${Number(
     params.patient_id
@@ -69,29 +80,45 @@ app.post(
 );
 
 app.post(
-  "/editPatient/:patient_id",
-  async ({ body }) => {
-    const {
-      patient_id,
-      name_surname,
-      phone_number,
-      birthday,
-      gender,
-      appointment_date,
-      course_count,
-      first_visit_date,
-    } = body;
+  "/editPatient",
+  async ({ body }: { body: Patient }) => { 
+    try {
+      const {
+        patient_id,
+        name_surname,
+        phone_number,
+        birthday,
+        gender,
+        appointment_date,
+        course_count,
+        first_visit_date,
+      } = body;
 
-    const result = await db.$queryRaw`
-    UPDATE "patient"  SET
-    "name_surname" = ${name_surname} , phone_number = ${phone_number}, birthday = ${birthday}, gender = ${gender}, appointment_date = ${appointment_date}, course_count = ${course_count}, first_visit_date = ${first_visit_date}
-    WHERE "patient_id"  = ${patient_id}
-  `;
-    return "Work";
+      await db.$queryRaw`
+        UPDATE "patient"
+        SET
+          "name_surname" = ${name_surname},
+          "phone_number" = ${phone_number},
+          "birthday" = ${birthday},
+          "gender" = ${gender},
+          "appointment_date" = ${appointment_date},
+          "course_count" = ${course_count},
+          "first_visit_date" = ${first_visit_date}
+        WHERE "patient_id" = ${patient_id}
+      `;
+
+      return { success: true, message: "Patient updated successfully" };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: "Error while editing patient data",
+        details: error.message,
+      };
+    }
   },
   {
     body: t.Object({
-      patient_id: t.Integer({ minimum: 0, maximum: 9999 }),
+      patient_id: t.Integer({ minimum: 0 }),
       name_surname: t.String({ minLength: 1, maxLength: 50 }),
       phone_number: t.String({ minLength: 10, maxLength: 10 }),
       birthday: t.Date(),
@@ -104,7 +131,7 @@ app.post(
 );
 
 app.post(
-  "/editAppoinmentDate/:patient_id",
+  "/editAppoinmentDate",
   async ({ body }) => {
     const { patient_id, appointment_date } = body;
 
