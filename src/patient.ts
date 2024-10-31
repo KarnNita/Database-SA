@@ -183,4 +183,77 @@ app.post(
   }
 );
 
+app.post(
+  "/setCourseCountToNine",
+  async ({ body }) => {
+    const { patient_id } = body;
+
+    try {
+      await db.$queryRaw`
+        UPDATE "patient"
+        SET "course_count" = 9
+        WHERE "patient_id" = ${patient_id};
+      `;
+
+      return { success: true, message: "Course count set to 9 successfully" };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: "Error while setting course count",
+        details: error.message,
+      };
+    }
+  },
+  {
+    body: t.Object({
+      patient_id: t.Integer({ minimum: 0 }),
+    }),
+  }
+);
+
+app.post(
+  "/decreaseCourseCount",
+  async ({ body }) => {
+    const { patient_id } = body;
+
+    try {
+      const existingPatient = await db.$queryRaw<Patient[]>`
+        SELECT "course_count" FROM "patient" WHERE "patient_id" = ${patient_id};
+      `;
+
+      if (existingPatient.length === 0) {
+        return {
+          success: false,
+          error: "Patient not found",
+        };
+      }
+
+      const currentCount = existingPatient[0].course_count;
+
+      if (currentCount > 0) {
+        await db.$queryRaw`
+          UPDATE "patient"
+          SET "course_count" = "course_count" - 1
+          WHERE "patient_id" = ${patient_id};
+        `;
+        return { success: true, message: "Course count decreased by 1" };
+      } else {
+        return { success: false, message: "Course count is already at 0" };
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        error: "Error while decreasing course count",
+        details: error.message,
+      };
+    }
+  },
+  {
+    body: t.Object({
+      patient_id: t.Integer({ minimum: 0 }),
+    }),
+  }
+);
+
+
 export default app;
