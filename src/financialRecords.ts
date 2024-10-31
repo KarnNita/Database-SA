@@ -31,7 +31,7 @@ app.post("/addRecord", async ({body}) => {
   
   return { success: true, message: "Record added successfully", result };
 },{body:t.Object({
-  record_date:t.Date(), income_and_expenses:t.String({minLength : 5, maxLength :8}), cost:t.Integer({minimum : 0}),  staff_id:t.Integer()}) 
+  record_date:t.Date(), income_and_expenses:t.String({minLength : 5, maxLength :8}), cost:t.Number({minimum : 0}),  staff_id:t.Integer()}) 
 });
 
   
