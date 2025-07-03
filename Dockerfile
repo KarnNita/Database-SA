@@ -12,10 +12,4 @@ COPY . .
 
 ARG DATABASE_URL
 
-ENV DATABASE_URL=$DATABASE_URL
-RUN bunx prisma db pull
-RUN bunx prisma generate
-
-CMD ["bun", "src/index.ts"]
-
 EXPOSE 3000

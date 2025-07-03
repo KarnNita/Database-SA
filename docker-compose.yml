@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    command: sh -c "apt-get update -y && apt-get install -y openssl && bunx prisma db pull && bunx prisma generate && bun run src/index.ts"
